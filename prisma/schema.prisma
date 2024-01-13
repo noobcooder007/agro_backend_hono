@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model employee {
+  pkiId            Int         @id @default(autoincrement())
+  fcFirstname      String      @db.VarChar
+  fcFirstLastname  String      @db.VarChar
+  fcSecondLastname String      @db.VarChar
+  fdBirthday       DateTime    @db.Date
+  fdCreatedAt      DateTime    @db.Date
+  fkiCreatedBy     Int
+  fiIsActive       Boolean     @default(true)
+  user             user        @relation(fields: [fkiCreatedBy], references: [pkiId], onDelete: NoAction, onUpdate: NoAction)
+  piecework        piecework[]
+
+  @@unique([fcFirstname, fcFirstLastname, fcSecondLastname], map: "employee_ukey")
+}
+
+model piecework {
+  pkiId            Int                @id @default(autoincrement())
+  fkiEmployee      Int
+  fiTotal          Float              @db.Real
+  fdCreatedAt      DateTime           @db.Date
+  fkiCreatedBy     Int
+  fiIsActive       Boolean            @default(true)
+  user             user               @relation(fields: [fkiCreatedBy], references: [pkiId], onDelete: NoAction, onUpdate: NoAction)
+  employee         employee           @relation(fields: [fkiEmployee], references: [pkiId], onDelete: NoAction, onUpdate: NoAction)
+  piecework_detail piecework_detail[]
+}
+
+model piecework_detail {
+  pkiId                Int                 @id @default(autoincrement())
+  fkiPiecework         Int
+  fkiWorkTypeRecipient Int
+  fiQuantity           Int
+  fiSubtotal           Float               @db.Real
+  fdCreatedAt          DateTime            @db.Date
+  fkiCreatedBy         Int
+  fiIsActive           Boolean             @default(true)
+  user                 user                @relation(fields: [fkiCreatedBy], references: [pkiId], onDelete: NoAction, onUpdate: NoAction)
+  piecework            piecework           @relation(fields: [fkiPiecework], references: [pkiId], onDelete: NoAction, onUpdate: NoAction)
+  work_type_recipient  work_type_recipient @relation(fields: [fkiWorkTypeRecipient], references: [pkiId], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model recipient {
+  pkiId           Int               @id @default(autoincrement())
+  fcDescription   String            @unique(map: "recipient_description_ukey") @db.VarChar
+  fdCreatedAt     DateTime          @db.Date
+  fkiCreatedBy    Int
+  fiIsActive      Boolean           @default(true)
+  user            user              @relation(fields: [fkiCreatedBy], references: [pkiId], onDelete: NoAction, onUpdate: NoAction)
+  recipient_price recipient_price[]
+}
+
+model recipient_price {
+  pkiId        Int       @id(map: "recipient_price_price_pkey") @default(autoincrement())
+  fkiRecipient Int
+  fiPrice      Float     @db.Real
+  fdCreatedAt  DateTime  @db.Date
+  fkiCreatedBy Int
+  fiIsActive   Boolean   @default(true)
+  recipient    recipient @relation(fields: [fkiRecipient], references: [pkiId], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([fkiRecipient, fiPrice], map: "recipient_price_ukey")
+}
+
+model user {
+  pkiId               Int                   @id @default(autoincrement())
+  fcUsername          String                @unique(map: "user_username_ukey") @db.VarChar
+  fcPassword          String                @db.VarChar
+  fiIsActive          Boolean               @default(true)
+  fdCreatedAt         DateTime              @db.Date
+  employee            employee[]
+  piecework           piecework[]
+  piecework_detail    piecework_detail[]
+  recipient           recipient[]
+  work_type_recipient work_type_recipient[]
+}
+
+model work_type {
+  pkiId         Int      @id @default(autoincrement())
+  fcDescription String   @unique(map: "work_type_description_ukey") @db.VarChar
+  fiHourSalary  Float?   @db.Real
+  fdCreatedAt   DateTime @db.Date
+  fkiCreatedBy  Int
+  fiIsActive    Boolean  @default(true)
+}
+
+model work_type_recipient {
+  pkiId             Int                @id @default(autoincrement())
+  fkiWorkType       Int
+  fkiRecipientPrice Int?
+  fdCreatedAt       DateTime           @db.Date
+  fkiCreatedBy      Int
+  fiIsActive        Boolean            @default(true)
+  piecework_detail  piecework_detail[]
+  user              user               @relation(fields: [fkiCreatedBy], references: [pkiId], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([fkiWorkType, fkiRecipientPrice], map: "work_type_recipient_ukey")
+}

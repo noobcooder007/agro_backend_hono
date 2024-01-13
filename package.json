@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "prisma-refresh": "bun run prisma db pull && bun run prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "latest",
+    "hono": "^3.12.0",
+    "prisma": "latest"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.0.0",
+    "bun-types": "^1.0.7"
+  }
+}
