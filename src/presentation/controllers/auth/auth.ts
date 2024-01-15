@@ -1,9 +1,12 @@
 import { Hono, MiddlewareHandler } from 'hono'
 import { validator } from 'hono/validator'
 
-import { login, signup } from '../../infraestructure/auth/auth'
+import { AuthService } from '../../../infrastructure/service/auth/auth'
+import { IUserRepository } from '../../../infrastructure/repositories/auth/user_repository_impl'
+import { IUserDatasource } from '../../../infrastructure/datasource/auth/user_datasource_impl'
 
 const auth = new Hono()
+const authService = new AuthService(new IUserRepository(new IUserDatasource()))
 
 const validateFields = (): MiddlewareHandler => {
     return validator('json', (value, c) => {
@@ -25,10 +28,10 @@ const validateFields = (): MiddlewareHandler => {
 
 auth.post('/login',
     validateFields(),
-    login)
+    authService.login)
 
 auth.post('/signup',
     validateFields(),
-    signup)
+    authService.signup)
 
 export default auth

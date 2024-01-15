@@ -1,9 +1,11 @@
 import { Hono, MiddlewareHandler } from 'hono'
 import { validator } from 'hono/validator'
-
-import { createEmployee, deleteEmployee, getEmployeeById, getEmployees, updateEmployee } from '../../infraestructure/employee/employee'
+import { EmployeeService } from '../../../infrastructure/service/employee/employee'
+import { IEmployeeRepository } from '../../../infrastructure/repositories/employee/employee_repository_impl'
+import { IEmployeeDatasource } from '../../../infrastructure/datasource/employee/employee_datasource_impl'
 
 const employee = new Hono()
+const employeeService = new EmployeeService(new IEmployeeRepository(new IEmployeeDatasource()))
 
 const validateFields = (): MiddlewareHandler => {
     return validator('json', (value, c) => {
@@ -31,18 +33,18 @@ const validateFields = (): MiddlewareHandler => {
 
 employee.post('/',
     validateFields(),
-    createEmployee)
+    employeeService.createEmployee)
 
 employee.get('/',
-    getEmployees)
+    employeeService.getEmployees)
 
 employee.get('/:id',
-    getEmployeeById)
+    employeeService.getEmployeeById)
 
 employee.patch('/',
-    updateEmployee)
+    employeeService.updateEmployee)
 
 employee.delete('/:id',
-    deleteEmployee)
+    employeeService.deleteEmployee)
 
 export default employee

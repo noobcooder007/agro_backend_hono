@@ -2,8 +2,8 @@ import { Hono } from 'hono'
 import { jwt } from 'hono/jwt'
 import { logger } from 'hono/logger'
 
-import auth from './presentation/auth/auth'
-import employee from './presentation/employee/employee'
+import auth from './presentation/controllers/auth/auth'
+import employee from './presentation/controllers/employee/employee'
 
 const port = parseInt(process.env.PORT!) || 3000
 
@@ -21,7 +21,6 @@ app.use('*', logger())
 
 app.route('/auth', auth)
 app.route('/api/employee', employee)
-// app.route('/api/recipient', recipient)
 
 app.notFound((c) => {
   c.status(404)
