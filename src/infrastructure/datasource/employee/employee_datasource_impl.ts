@@ -10,9 +10,9 @@ export class IEmployeeDatasource implements EmployeeDatasource {
             where: {
                 fiIsActive: true
             },
-            orderBy: {
-                pkiId: 'asc'
-            }
+            orderBy: [{
+                fcFirstLastname: 'asc'
+            }]
         })
     }
     async findFirst(id: number): Promise<employee | null> {
