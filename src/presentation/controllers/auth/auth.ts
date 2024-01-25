@@ -34,4 +34,7 @@ auth.post('/signup',
     validateFields(),
     authService.signup)
 
+auth.post('/renew',
+    authService.renew)
+
 export default auth

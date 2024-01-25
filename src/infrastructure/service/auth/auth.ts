@@ -1,5 +1,5 @@
 import { Context } from 'hono'
-import { sign } from 'hono/jwt'
+import { decode, sign } from 'hono/jwt'
 
 import { User } from '../../../domain/entities/user'
 import { UserRepository } from '../../../domain/repositories/auth/user_repository'
@@ -80,6 +80,26 @@ export class AuthService {
                 msg: 'Something went wrong'
             })
         }
+    }
+
+    public renew = async (c: Context) => {
+        const token = c.req.header('x-token')
+        if (token === 'no-token') {
+            return c.json({
+                ok: false,
+                msg: 'Token is invalid'
+            })
+        }
+        const { payload } = decode(token!)
+        const jwtPayload = {
+            exp: (Date.now()/1000) + 3600,
+            pkiId: payload.pkiId
+        }
+        const renewToken = await sign(jwtPayload, c.env!.JWT_SECRET as string)
+        return c.json({
+            ok: true,
+            token: renewToken
+        })
     }
 
 }
