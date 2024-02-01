@@ -79,8 +79,7 @@ export class EmployeeService {
             await this.employeeRespository.update(employee, payload.pkiId)
             c.status(200)
             return c.json({
-                ok: true,
-                msg: 'Employee updated'
+                ok: true
             })
         } catch (error) {
             c.status(500)
