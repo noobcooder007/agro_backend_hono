@@ -15,6 +15,13 @@ export class IEmployeeDatasource implements EmployeeDatasource {
             }]
         })
     }
+    async findManyActives(): Promise<employee[] | null> {
+        return await this.prisma.employee.findMany({
+            orderBy: [{
+                fcFirstLastname: 'asc'
+            }]
+        })
+    }
     async findFirst(id: number): Promise<employee | null> {
         return await this.prisma.employee.findFirst({
             where: {

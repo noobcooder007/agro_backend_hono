@@ -12,7 +12,10 @@ export class EmployeeService {
 
     public getEmployees = async (c: Context) => {
         try {
-            const employees = await this.employeeRespository.findMany()
+            const isActive = (c.req.param('isActive') === 'true') ?? false
+            const employees = isActive
+                ? await this.employeeRespository.findMany()
+                : await this.employeeRespository.findManyActives()
             c.status(200)
             return c.json({
                 ok: true,
@@ -26,7 +29,7 @@ export class EmployeeService {
             })
         }
     }
-    
+
     public getEmployeeById = async (c: Context) => {
         try {
             const id = parseInt(c.req.param('id'))
@@ -52,7 +55,7 @@ export class EmployeeService {
             })
         }
     }
-    
+
     public createEmployee = async (c: Context) => {
         try {
             const payload = c.get('jwtPayload')
@@ -71,7 +74,7 @@ export class EmployeeService {
             })
         }
     }
-    
+
     public updateEmployee = async (c: Context) => {
         try {
             const payload = c.get('jwtPayload')
