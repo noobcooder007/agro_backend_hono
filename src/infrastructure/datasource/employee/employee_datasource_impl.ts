@@ -10,9 +10,16 @@ export class IEmployeeDatasource implements EmployeeDatasource {
             where: {
                 fiIsActive: true
             },
-            orderBy: {
-                pkiId: 'asc'
-            }
+            orderBy: [{
+                fcFirstLastname: 'asc'
+            }]
+        })
+    }
+    async findManyActives(): Promise<employee[] | null> {
+        return await this.prisma.employee.findMany({
+            orderBy: [{
+                fcFirstLastname: 'asc'
+            }]
         })
     }
     async findFirst(id: number): Promise<employee | null> {

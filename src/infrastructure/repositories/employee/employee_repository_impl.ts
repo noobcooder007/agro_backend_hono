@@ -14,6 +14,9 @@ export class IEmployeeRepository implements EmployeeRepository {
     async findMany(): Promise<employee[] | null> {
         return await this.employeeDatasource.findMany()
     }
+    async findManyActives(): Promise<employee[] | null> {
+        return await this.employeeDatasource.findManyActives()
+    }
     async findFirst(id: number): Promise<employee | null> {
         return await this.employeeDatasource.findFirst(id)
     }

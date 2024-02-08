@@ -7,6 +7,6 @@ export interface Employee {
     fcSecondLastname: string;
     fdBirthday: Date;
     fdCreatedAt: Date;
-    fkiCreatedBy: User;
+    fkiCreatedBy?: User;
     fiIsActive: boolean;
 }
