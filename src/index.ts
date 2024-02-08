@@ -1,4 +1,4 @@
-import { Hono } from 'hono'
+import { Context, Hono } from 'hono'
 import { jwt } from 'hono/jwt'
 import { logger } from 'hono/logger'
 
@@ -18,6 +18,10 @@ app.use('/api/*',
   })
 
 app.use('*', logger())
+
+app.get('/', (c: Context) => {
+  return c.text('Bienvenido a Agro Bonsai')
+})
 
 app.route('/auth', auth)
 app.route('/api/employee', employee)
