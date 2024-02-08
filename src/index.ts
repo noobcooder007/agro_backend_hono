@@ -1,11 +1,16 @@
 import { Context, Hono } from 'hono'
 import { jwt } from 'hono/jwt'
 import { logger } from 'hono/logger'
+import { handle } from 'hono/vercel'
 
 import auth from './presentation/controllers/auth/auth'
 import employee from './presentation/controllers/employee/employee'
 
 const port = parseInt(process.env.PORT!) || 3000
+
+export const config = {
+  runtime: "edge"
+}
 
 const app = new Hono()
 
@@ -36,5 +41,5 @@ app.notFound((c) => {
 
 export default {
   port,
-  fetch: app.fetch
+  fetch: handle(app)
 }
